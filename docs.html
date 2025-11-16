@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Markdown Editor</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <div class="nav-brand-icon">
+                    <i class="fas fa-markdown"></i>
+                </div>
+                Markdown Editor
+            </a>
+            
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="docs.html" class="nav-link active">Docs</a></li>
+                <li><a href="editor.html" class="nav-link">Editor</a></li>
+                <li>
+                    <div class="theme-switcher" id="themeSwitcher" title="Toggle theme">
+                        <div class="theme-switcher-toggle">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="mb-8 fade-in">Documentation</h1>
+        
+        <div class="docs-container">
+            <!-- Sidebar -->
+            <aside class="docs-sidebar slide-in-left">
+                <nav>
+                    <ul class="docs-nav">
+                        <li class="docs-nav-item">
+                            <a href="#getting-started" class="docs-nav-link active">Getting Started</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="#basic-formatting" class="docs-nav-link">Basic Formatting</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="#advanced-features" class="docs-nav-link">Advanced Features</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="#keyboard-shortcuts" class="docs-nav-link">Keyboard Shortcuts</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="#exporting" class="docs-nav-link">Exporting Documents</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="#tips-tricks" class="docs-nav-link">Tips & Tricks</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Content -->
+            <div class="docs-content slide-in-right">
+                <!-- Getting Started -->
+                <section id="getting-started" class="docs-section">
+                    <h2>Getting Started</h2>
+                    <p>
+                        Welcome to the Markdown Editor! This powerful tool allows you to create, edit, 
+                        and preview Markdown documents in real-time. Follow these simple steps to get started:
+                    </p>
+                    
+                    <ol style="margin-left: 1.5rem; margin-top: 1rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Navigate to the Editor:</strong> Click the "Editor" link in the navigation 
+                            menu or the "Start Editing" button on the home page.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Start Writing:</strong> Begin typing your Markdown content in the left panel. 
+                            The preview will automatically update on the right.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Use the Toolbar:</strong> Access common formatting options from the toolbar 
+                            above the editor.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Save Your Work:</strong> Your content is automatically saved to browser storage. 
+                            You can also export it as a .md file.
+                        </li>
+                    </ol>
+
+                    <div class="code-block">
+# Welcome to Markdown Editor
+
+This is a **paragraph** with some *emphasized* text.
+
+## Features List
+- Live preview
+- Syntax highlighting  
+- Auto-save
+- Export functionality
+                    </div>
+                </section>
+
+                <!-- Basic Formatting -->
+                <section id="basic-formatting" class="docs-section">
+                    <h2>Basic Formatting</h2>
+                    <p>Markdown uses simple syntax to format text. Here are the most common formatting options:</p>
+                    
+                    <h3>Text Emphasis</h3>
+                    <div class="code-block">
+**Bold text** or __Bold text__
+*Italic text* or _Italic text_
+***Bold and italic*** or ___Bold and italic___
+                    </div>
+                    
+                    <h3>Headings</h3>
+                    <div class="code-block">
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+                    </div>
+                    
+                    <h3>Lists</h3>
+                    <div class="code-block">
+<!-- Unordered List -->
+- Item 1
+- Item 2
+  - Nested item
+  - Another nested item
+- Item 3
+
+<!-- Ordered List -->
+1. First item
+2. Second item
+3. Third item
+   1. Nested item
+   2. Another nested item
+                    </div>
+                    
+                    <h3>Links and Images</h3>
+                    <div class="code-block">
+<!-- Link -->
+[Link text](https://example.com)
+
+<!-- Image -->
+![Alt text](https://example.com/image.jpg)
+                    </div>
+                    
+                    <h3>Code</h3>
+                    <div class="code-block">
+<!-- Inline code -->
+Use `console.log()` for debugging
+
+<!-- Code block -->
+```javascript
+function hello() {
+    console.log("Hello, World!");
+}
+```
+                    </div>
+                    
+                    <h3>Blockquotes</h3>
+                    <div class="code-block">
+> This is a blockquote.
+> It can span multiple lines.
+> 
+> > Nested blockquotes are also supported.
+                    </div>
+                </section>
+
+                <!-- Advanced Features -->
+                <section id="advanced-features" class="docs-section">
+                    <h2>Advanced Features</h2>
+                    <p>Our editor supports GitHub-flavored Markdown (GFM) with additional features:</p>
+                    
+                    <h3>Tables</h3>
+                    <div class="code-block">
+| Header 1 | Header 2 | Header 3 |
+|----------|----------|----------|
+| Cell 1   | Cell 2   | Cell 3   |
+| Cell 4   | Cell 5   | Cell 6   |
+                    </div>
+                    
+                    <h3>Task Lists</h3>
+                    <div class="code-block">
+- [x] Completed task
+- [ ] Incomplete task
+- [ ] Another incomplete task
+                    </div>
+                    
+                    <h3>Strikethrough</h3>
+                    <div class="code-block">
+~~This text is struck through~~
+                    </div>
+                    
+                    <h3>Horizontal Rules</h3>
+                    <div class="code-block">
+---
+
+***
+
+___
+                    </div>
+                </section>
+
+                <!-- Keyboard Shortcuts -->
+                <section id="keyboard-shortcuts" class="docs-section">
+                    <h2>Keyboard Shortcuts</h2>
+                    <p>Work more efficiently with these keyboard shortcuts:</p>
+                    
+                    <div style="display: grid; gap: 0.75rem; margin-top: 1rem;">
+                        <div><kbd>Ctrl</kbd> + <kbd>B</kbd> - Bold text</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>I</kbd> - Italic text</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>H</kbd> - Insert heading</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>U</kbd> - Unordered list</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>O</kbd> - Ordered list</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>Q</kbd> - Blockquote</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>K</kbd> - Insert link</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>T</kbd> - Insert table</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>S</kbd> - Save document</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>`</kbd> - Inline code</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> - Code block</div>
+                        <div><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> - Insert image</div>
+                        <div><kbd>Tab</kbd> - Indent list item</div>
+                        <div><kbd>Shift</kbd> + <kbd>Tab</kbd> - Unindent list item</div>
+                    </div>
+                </section>
+
+                <!-- Exporting -->
+                <section id="exporting" class="docs-section">
+                    <h2>Exporting Documents</h2>
+                    <p>Export your Markdown documents with these simple steps:</p>
+                    
+                    <ol style="margin-left: 1.5rem; margin-top: 1rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            Click the "Export" button in the header (download icon)
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            The file will be automatically downloaded with a timestamp in the filename
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            The exported file will have a .md extension and can be opened in any Markdown editor
+                        </li>
+                    </ol>
+                    
+                    <div class="alert" style="background-color: rgba(76, 110, 245, 0.1); border: 1px solid var(--accent-primary); border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+                        <p style="margin: 0; color: var(--text-primary);">
+                            <strong>Note:</strong> Your work is automatically saved to browser storage, 
+                            so you can close and reopen the editor without losing your content.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Tips & Tricks -->
+                <section id="tips-tricks" class="docs-section">
+                    <h2>Tips & Tricks</h2>
+                    
+                    <h3>1. Use the Toolbar</h3>
+                    <p>
+                        The toolbar provides quick access to all formatting options. 
+                        Hover over each button to see keyboard shortcuts.
+                    </p>
+                    
+                    <h3>2. Auto-Save</h3>
+                    <p>
+                        Your content is automatically saved every second. 
+                        The "Last saved" timestamp shows when your work was last preserved.
+                    </p>
+                    
+                    <h3>3. Character Count</h3>
+                    <p>
+                        Track your document length with the character counter in the bottom-right corner of the editor.
+                    </p>
+                    
+                    <h3>4. Responsive Design</h3>
+                    <p>
+                        On mobile devices, the editor and preview panels stack vertically for better usability.
+                    </p>
+                    
+                    <h3>5. Copy-Paste</h3>
+                    <p>
+                        You can paste Markdown content from other sources directly into the editor. 
+                        The preview will update automatically.
+                    </p>
+                    
+                    <h3>6. Syntax Highlighting</h3>
+                    <p>
+                        Code blocks automatically detect the programming language and apply appropriate syntax highlighting.
+                    </p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="container mt-16 pb-8">
+        <div class="text-center text-[var(--text-secondary)]">
+            <p>&copy; 2024 Markdown Editor. Built with <i class="fas fa-heart text-red-500"></i> using Vanilla JavaScript and TailwindCSS.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="scripts/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor - Markdown Editor</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Highlight.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <!-- Marked.js for GitHub-flavored Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <style>
+        /* Editor-specific styles */
+        .editor-panel {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            overflow: hidden;
+        }
+        
+        .preview-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            overflow: hidden;
+        }
+        
+        .toolbar-btn {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(76, 110, 245, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .toolbar-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .toolbar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 110, 245, 0.4);
+            background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-hover) 100%);
+        }
+        
+        .toolbar-btn:hover::before {
+            left: 100%;
+        }
+        
+        .toolbar-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(76, 110, 245, 0.3);
+        }
+        
+        .header-btn {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(76, 110, 245, 0.2);
+        }
+        
+        .header-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(76, 110, 245, 0.3);
+        }
+        
+        .header-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Markdown preview styling */
+        .markdown-body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+        
+        .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 {
+            margin-top: 32px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+            color: #FFFFFF;
+        }
+        
+        .markdown-body h1 {
+            font-size: 2.25em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5em;
+        }
+        
+        .markdown-body h2 {
+            font-size: 1.75em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3em;
+        }
+        
+        .markdown-body h3 {
+            font-size: 1.4em;
+        }
+        
+        .markdown-body p {
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .markdown-body ul, .markdown-body ol {
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+        
+        .markdown-body li {
+            margin-bottom: 0.5em;
+            color: var(--text-primary);
+        }
+        
+        .markdown-body blockquote {
+            padding: 1em 1.5em;
+            color: var(--text-secondary);
+            border-left: 4px solid var(--accent-primary);
+            margin: 16px 0;
+            background-color: rgba(76, 110, 245, 0.05);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .markdown-body table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .markdown-body th, .markdown-body td {
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            text-align: left;
+        }
+        
+        .markdown-body th {
+            background-color: var(--bg-tertiary);
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+        
+        .markdown-body td {
+            background-color: var(--bg-primary);
+        }
+        
+        .markdown-body a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .markdown-body a:hover {
+            color: var(--accent-secondary);
+            text-decoration: underline;
+        }
+        
+        .markdown-body pre {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            overflow: auto;
+            margin: 16px 0;
+        }
+        
+        .markdown-body code {
+            background-color: rgba(76, 110, 245, 0.1);
+            color: var(--text-primary);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-size: 85%;
+            border: 1px solid rgba(76, 110, 245, 0.2);
+        }
+        
+        .markdown-body pre code {
+            background-color: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+        }
+        
+        /* Ripple animation */
+        @keyframes ripple {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0.5;
+            }
+            100% {
+                width: 100px;
+                height: 100px;
+                opacity: 0;
+            }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .editor-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .editor-panel, .preview-panel {
+                width: 100%;
+                max-height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <div class="nav-brand-icon">
+                    <i class="fas fa-markdown"></i>
+                </div>
+                Markdown Editor
+            </a>
+            
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="docs.html" class="nav-link">Docs</a></li>
+                <li><a href="editor.html" class="nav-link active">Editor</a></li>
+                <li>
+                    <div class="theme-switcher" id="themeSwitcher" title="Toggle theme">
+                        <div class="theme-switcher-toggle">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Editor Header -->
+    <header class="container mt-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-bold text-white">Markdown Editor</h1>
+                <div class="text-sm text-[var(--text-secondary)]">
+                    <span id="lastSaved">Never saved</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button id="documentsBtn" class="header-btn flex items-center space-x-2" title="Documents (Ctrl+D)">
+                    <i class="fas fa-folder"></i>
+                    <span class="hidden sm:inline">Documents</span>
+                </button>
+                <button id="templatesBtn" class="header-btn flex items-center space-x-2" title="Templates (Ctrl+T)">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="hidden sm:inline">Templates</span>
+                </button>
+                <button id="findReplaceBtn" class="header-btn flex items-center space-x-2" title="Find & Replace (Ctrl+F)">
+                    <i class="fas fa-search"></i>
+                    <span class="hidden sm:inline">Find</span>
+                </button>
+                <button id="tocBtn" class="header-btn flex items-center space-x-2" title="Table of Contents">
+                    <i class="fas fa-list"></i>
+                    <span class="hidden sm:inline">TOC</span>
+                </button>
+                <button id="exportPdfBtn" class="header-btn flex items-center space-x-2" title="Export to PDF">
+                    <i class="fas fa-file-pdf"></i>
+                    <span class="hidden sm:inline">PDF</span>
+                </button>
+                <button id="shareBtn" class="header-btn flex items-center space-x-2" title="Share Document">
+                    <i class="fas fa-share"></i>
+                    <span class="hidden sm:inline">Share</span>
+                </button>
+                <button id="saveBtn" class="header-btn flex items-center space-x-2" title="Save (Ctrl+S)">
+                    <i class="fas fa-save"></i>
+                    <span class="hidden sm:inline">Save</span>
+                </button>
+                <button id="exportBtn" class="header-btn flex items-center space-x-2" title="Export MD">
+                    <i class="fas fa-download"></i>
+                    <span class="hidden sm:inline">Export</span>
+                </button>
+                <button id="clearBtn" class="header-btn flex items-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700" title="Clear Document">
+                    <i class="fas fa-trash"></i>
+                    <span class="hidden sm:inline">Clear</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Editor Content -->
+    <main class="container mt-4 pb-8">
+        <div class="editor-container flex gap-4" style="height: calc(100vh - 200px);">
+            <!-- Editor Panel -->
+            <section class="editor-panel w-full lg:w-1/2 flex flex-col">
+                <!-- Toolbar -->
+                <div class="bg-[var(--bg-secondary)] border-b border-[var(--border-color)] p-4">
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <button class="toolbar-btn" data-action="bold" title="Bold (Ctrl+B)">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="italic" title="Italic (Ctrl+I)">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="heading" title="Heading (Ctrl+H)">
+                            <i class="fas fa-heading"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="ul" title="Unordered List (Ctrl+U)">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="ol" title="Ordered List (Ctrl+O)">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="quote" title="Quote (Ctrl+Q)">
+                            <i class="fas fa-quote-left"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="code" title="Inline Code (Ctrl+`)">
+                            <i class="fas fa-code"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="codeblock" title="Code Block (Ctrl+Shift+C)">
+                            <i class="fas fa-file-code"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="link" title="Link (Ctrl+K)">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="image" title="Image (Ctrl+Shift+I)">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="table" title="Table (Ctrl+T)">
+                            <i class="fas fa-table"></i>
+                        </button>
+                        <button class="toolbar-btn" data-action="hr" title="Horizontal Rule (Ctrl+R)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Textarea -->
+                <div class="flex-1 relative">
+                    <textarea 
+                        id="editor" 
+                        class="w-full h-full p-6 font-mono text-sm text-[var(--text-primary)] bg-[var(--bg-primary)] resize-none focus:outline-none custom-scrollbar border-none"
+                        placeholder="Start typing your Markdown here..."
+                        spellcheck="false"
+                    ></textarea>
+                    <!-- Character count -->
+                    <div class="absolute bottom-4 right-4 text-xs text-[var(--text-secondary)] bg-[var(--bg-secondary)] px-3 py-1.5 rounded-lg border border-[var(--border-color)]">
+                        <span id="charCount">0</span> characters
+                    </div>
+                </div>
+            </section>
+
+            <!-- Preview Panel -->
+            <section class="preview-panel w-full lg:w-1/2 flex flex-col">
+                <!-- Preview Header -->
+                <div class="bg-[var(--bg-secondary)] border-b border-[var(--border-color)] px-6 py-4 flex items-center justify-between">
+                    <h2 class="text-sm font-medium text-white flex items-center">
+                        <i class="fas fa-eye mr-2 text-[var(--accent-primary)]"></i>
+                        Preview
+                    </h2>
+                </div>
+                
+                <!-- Preview Content -->
+                <div id="preview" class="flex-1 p-6 overflow-auto custom-scrollbar markdown-body">
+                    <div class="text-[var(--text-secondary)] text-center mt-12">
+                        <i class="fas fa-markdown text-6xl mb-6 text-[var(--accent-primary)]"></i>
+                        <p class="text-lg">Your Markdown preview will appear here...</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Statistics Panel -->
+    <div class="stats-panel">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="wordCount">0</div>
+                <div class="stat-label">Words</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="readingTime">0</div>
+                <div class="stat-label">Min Read</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="lineCount">0</div>
+                <div class="stat-label">Lines</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="paragraphCount">0</div>
+                <div class="stat-label">Paragraphs</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table of Contents Panel -->
+    <div class="toc-panel" id="tocPanel" style="display: none;">
+        <div class="toc-title">Table of Contents</div>
+        <nav class="toc-list" id="tocList">
+            <!-- TOC items will be generated here -->
+        </nav>
+    </div>
+
+    <!-- Document Manager -->
+    <div class="document-manager" id="documentManager">
+        <div class="templates-header">
+            <h3>My Documents</h3>
+            <button id="closeDocumentsBtn" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="document-list" id="documentList">
+            <!-- Documents will be loaded here -->
+        </div>
+        <div style="padding: 1rem; border-top: 1px solid var(--border-color);">
+            <button id="newDocumentBtn" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-plus mr-2"></i>
+                New Document
+            </button>
+        </div>
+    </div>
+
+    <!-- Find and Replace -->
+    <div class="find-replace" id="findReplace">
+        <input type="text" class="find-replace-input" id="findInput" placeholder="Find text...">
+        <input type="text" class="find-replace-input" id="replaceInput" placeholder="Replace with...">
+        <div class="find-replace-buttons">
+            <button class="find-replace-btn" id="findNextBtn">Find Next</button>
+            <button class="find-replace-btn" id="replaceBtn">Replace</button>
+            <button class="find-replace-btn" id="replaceAllBtn">Replace All</button>
+            <button class="find-replace-btn secondary" id="closeFindReplaceBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- Templates Panel -->
+    <div class="templates-panel" id="templatesPanel">
+        <div class="templates-header">
+            <h3>Templates & Snippets</h3>
+            <button id="closeTemplatesBtn" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="templates-content">
+            <div class="template-category">
+                <div class="template-category-title">Documents</div>
+                <div class="template-grid">
+                    <div class="template-item" data-template="readme">
+                        <div class="template-item-title">README</div>
+                        <div class="template-item-description">Project README template</div>
+                    </div>
+                    <div class="template-item" data-template="blog-post">
+                        <div class="template-item-title">Blog Post</div>
+                        <div class="template-item-description">Blog article structure</div>
+                    </div>
+                    <div class="template-item" data-template="documentation">
+                        <div class="template-item-title">Documentation</div>
+                        <div class="template-item-description">Technical documentation</div>
+                    </div>
+                </div>
+            </div>
+            <div class="template-category">
+                <div class="template-category-title">Code Snippets</div>
+                <div class="template-grid">
+                    <div class="template-item" data-template="javascript-function">
+                        <div class="template-item-title">JS Function</div>
+                        <div class="template-item-description">JavaScript function template</div>
+                    </div>
+                    <div class="template-item" data-template="api-endpoint">
+                        <div class="template-item-title">API Endpoint</div>
+                        <div class="template-item-description">REST API documentation</div>
+                    </div>
+                    <div class="template-item" data-template="code-block">
+                        <div class="template-item-title">Code Block</div>
+                        <div class="template-item-description">Syntax highlighted code</div>
+                    </div>
+                </div>
+            </div>
+            <div class="template-category">
+                <div class="template-category-title">Other</div>
+                <div class="template-grid">
+                    <div class="template-item" data-template="meeting-notes">
+                        <div class="template-item-title">Meeting Notes</div>
+                        <div class="template-item-description">Meeting minutes template</div>
+                    </div>
+                    <div class="template-item" data-template="todo-list">
+                        <div class="template-item-title">Todo List</div>
+                        <div class="template-item-description">Task checklist template</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Command Palette -->
+    <div class="command-palette" id="commandPalette">
+        <input type="text" class="command-palette-input" id="commandInput" placeholder="Type a command...">
+        <div class="command-palette-list" id="commandList">
+            <!-- Commands will be populated here -->
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" id="fabBtn">
+        <i class="fas fa-plus"></i>
+    </button>
+    <div class="fab-menu" id="fabMenu">
+        <button class="fab-menu-item" id="fabDocuments" title="Documents">
+            <i class="fas fa-folder"></i>
+        </button>
+        <button class="fab-menu-item" id="fabTemplates" title="Templates">
+            <i class="fas fa-file-alt"></i>
+        </button>
+        <button class="fab-menu-item" id="fabFind" title="Find & Replace">
+            <i class="fas fa-search"></i>
+        </button>
+        <button class="fab-menu-item" id="fabCommand" title="Command Palette">
+            <i class="fas fa-terminal"></i>
+        </button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 px-6 py-3 transform translate-y-20 transition-all duration-300 opacity-0" style="background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%); color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(76, 110, 245, 0.4);">
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/api-editor.js"></script>
+</body>
+</html>

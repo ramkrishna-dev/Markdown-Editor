@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Editor - Home</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <div class="nav-brand-icon">
+                    <i class="fas fa-markdown"></i>
+                </div>
+                Markdown Editor
+            </a>
+            
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="docs.html" class="nav-link">Docs</a></li>
+                <li><a href="editor.html" class="nav-link">Editor</a></li>
+                <li>
+                    <div class="theme-switcher" id="themeSwitcher" title="Toggle theme">
+                        <div class="theme-switcher-toggle">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1 class="hero-title fade-in">Markdown Editor</h1>
+                <p class="lead fade-in">
+                    A powerful, modern web-based Markdown editor with live preview, syntax highlighting, 
+                    and a beautiful dark theme. Create, edit, and export your Markdown documents with ease.
+                </p>
+                <div class="hero-actions fade-in">
+                    <a href="editor.html" class="btn btn-primary btn-lg">
+                        <i class="fas fa-edit mr-2"></i>
+                        Start Editing
+                    </a>
+                    <a href="docs.html" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-book mr-2"></i>
+                        View Documentation
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="container">
+            <h2 class="text-center mb-8 fade-in">Features</h2>
+            <div class="features-grid">
+                <div class="card feature-card slide-in-left">
+                    <div class="feature-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="feature-title">Live Preview</h3>
+                    <p class="feature-description">
+                        See your Markdown rendered in real-time as you type. 
+                        No need to switch between tabs or refresh the page.
+                    </p>
+                </div>
+                
+                <div class="card feature-card slide-in-left" style="animation-delay: 0.1s">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="feature-title">Syntax Highlighting</h3>
+                    <p class="feature-description">
+                        Beautiful syntax highlighting for code blocks with support for 
+                        multiple programming languages.
+                    </p>
+                </div>
+                
+                <div class="card feature-card slide-in-left" style="animation-delay: 0.2s">
+                    <div class="feature-icon">
+                        <i class="fas fa-keyboard"></i>
+                    </div>
+                    <h3 class="feature-title">Keyboard Shortcuts</h3>
+                    <p class="feature-description">
+                        Work faster with intuitive keyboard shortcuts for common formatting 
+                        options like bold, italic, and more.
+                    </p>
+                </div>
+                
+                <div class="card feature-card slide-in-right" style="animation-delay: 0.3s">
+                    <div class="feature-icon">
+                        <i class="fas fa-save"></i>
+                    </div>
+                    <h3 class="feature-title">Auto-Save</h3>
+                    <p class="feature-description">
+                        Your work is automatically saved to browser storage, 
+                        so you never lose your progress.
+                    </p>
+                </div>
+                
+                <div class="card feature-card slide-in-right" style="animation-delay: 0.4s">
+                    <div class="feature-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3 class="feature-title">Export to MD</h3>
+                    <p class="feature-description">
+                        Export your Markdown documents as .md files with a single click. 
+                        Perfect for sharing and collaboration.
+                    </p>
+                </div>
+                
+                <div class="card feature-card slide-in-right" style="animation-delay: 0.5s">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Responsive Design</h3>
+                    <p class="feature-description">
+                        Works seamlessly on desktop, tablet, and mobile devices. 
+                        Edit your documents anywhere, anytime.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="container mt-16">
+            <div class="card text-center" style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);">
+                <h2 class="mb-4">Ready to Start Writing?</h2>
+                <p class="lead mb-6">
+                    Join thousands of writers who use our Markdown editor for creating 
+                    beautiful documents, documentation, and notes.
+                </p>
+                <a href="editor.html" class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Launch Editor
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="container mt-16 pb-8">
+        <div class="text-center text-[var(--text-secondary)]">
+            <p>&copy; 2024 Markdown Editor. Built with <i class="fas fa-heart text-red-500"></i> using Vanilla JavaScript and TailwindCSS.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="scripts/main.js"></script>
+</body>
+</html>

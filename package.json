@@ -1,0 +1,44 @@
+{
+  "name": "markdown-editor-pro",
+  "version": "1.0.0",
+  "description": "Advanced Markdown Editor with User System and API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "init-db": "node scripts/init-db.js",
+    "build": "echo 'No build step required for this project'",
+    "deploy": "./deploy.sh",
+    "test": "echo 'No tests specified yet'",
+    "test:api": "echo 'API tests not implemented yet'",
+    "test:integration": "echo 'Integration tests not implemented yet'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "socket.io": "^4.7.4",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.1",
+    "validator": "^13.11.0",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "markdown",
+    "editor",
+    "collaboration",
+    "real-time",
+    "api"
+  ],
+  "author": "Markdown Editor Pro",
+  "license": "MIT"
+}
