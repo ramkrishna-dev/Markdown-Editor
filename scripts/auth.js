@@ -10,6 +10,40 @@ class AuthManager {
     init() {
         this.setupEventListeners();
         this.checkAuthStatus();
+        this.updateServerStatus();
+        this.checkServerConnection();
+    }
+    
+    updateServerStatus() {
+        const statusElement = document.getElementById('serverStatus');
+        if (!statusElement) return;
+        
+        statusElement.innerHTML = `
+            <i class="fas fa-spinner fa-spin mr-1"></i>
+            Checking...
+        `;
+        
+        this.checkServerConnection().then(isConnected => {
+            if (isConnected) {
+                statusElement.innerHTML = `
+                    <i class="fas fa-check-circle mr-1"></i>
+                    Online
+                `;
+                statusElement.className = 'text-xs px-2 py-1 rounded bg-green-500 text-white';
+            } else {
+                statusElement.innerHTML = `
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    Offline
+                `;
+                statusElement.className = 'text-xs px-2 py-1 rounded bg-red-500 text-white';
+            }
+        }).catch(error => {
+            statusElement.innerHTML = `
+                <i class="fas fa-question-circle mr-1"></i>
+                Unknown
+            `;
+            statusElement.className = 'text-xs px-2 py-1 rounded bg-yellow-500 text-white';
+        });
     }
     
     setupEventListeners() {
@@ -66,33 +100,64 @@ class AuthManager {
         loginBtnText.textContent = 'Signing in...';
         
         try {
+            // Add timeout for slow connections
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
             const response = await fetch(`${this.apiBase}/auth/login`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, password }),
+                signal: controller.signal
             });
+            
+            // Clear timeout if request completes
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                let errorMessage = 'Login failed';
+                
+                if (response.status === 401) {
+                    errorMessage = 'Invalid username or password';
+                } else if (response.status === 403) {
+                    errorMessage = 'Account temporarily locked';
+                } else if (response.status === 429) {
+                    errorMessage = 'Too many login attempts. Please try again later';
+                } else if (response.status >= 500) {
+                    errorMessage = 'Server error. Please try again later';
+                }
+                
+                this.showMessage(errorMessage, 'error');
+                return;
+            }
             
             const data = await response.json();
             
-            if (response.ok) {
-                this.token = data.token;
-                this.user = data.user;
-                
-                localStorage.setItem('auth_token', this.token);
-                localStorage.setItem('current_user', JSON.stringify(this.user));
-                
-                this.showMessage('Login successful! Redirecting...', 'success');
-                
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            } else {
-                this.showMessage(data.error || 'Login failed', 'error');
-            }
+            this.token = data.token;
+            this.user = data.user;
+            
+            localStorage.setItem('auth_token', this.token);
+            localStorage.setItem('current_user', JSON.stringify(this.user));
+            
+            this.showMessage('Login successful! Redirecting...', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+            
         } catch (error) {
-            this.showMessage('Network error. Please try again.', 'error');
+            console.error('Login error:', error);
+            
+            if (error.name === 'AbortError') {
+                this.showMessage('Request timeout. Please check your connection.', 'error');
+            } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                this.showMessage('Unable to connect to server. Please check if the server is running.', 'error');
+            } else {
+                this.showMessage('Network error. Please try again.', 'error');
+            }
         } finally {
             loginBtn.disabled = false;
             loginBtnText.textContent = 'Sign In';
@@ -132,23 +197,50 @@ class AuthManager {
             return;
         }
         
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            this.showMessage('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        // Username validation
+        if (username.length < 3) {
+            this.showMessage('Username must be at least 3 characters', 'error');
+            return;
+        }
+        
+        if (username.length > 20) {
+            this.showMessage('Username must be less than 20 characters', 'error');
+            return;
+        }
+        
         // Show loading state
         registerBtn.disabled = true;
         registerBtnText.textContent = 'Creating account...';
         
         try {
+            // Add timeout for slow connections
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+            
             const response = await fetch(`${this.apiBase}/auth/register`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({ 
                     username, 
                     email, 
                     password,
                     firstName: `${firstName} ${lastName}`
-                })
+                }),
+                signal: controller.signal
             });
+            
+            // Clear timeout if request completes
+            clearTimeout(timeoutId);
             
             const data = await response.json();
             
@@ -165,10 +257,31 @@ class AuthManager {
                     window.location.href = 'dashboard.html';
                 }, 1500);
             } else {
-                this.showMessage(data.error || 'Registration failed', 'error');
+                let errorMessage = data.error || 'Registration failed';
+                
+                // Provide more specific error messages
+                if (response.status === 409) {
+                    errorMessage = 'Username or email already exists';
+                } else if (response.status === 400) {
+                    errorMessage = 'Invalid input data provided';
+                } else if (response.status === 429) {
+                    errorMessage = 'Too many registration attempts. Please try again later';
+                } else if (response.status >= 500) {
+                    errorMessage = 'Server error. Please try again later';
+                }
+                
+                this.showMessage(errorMessage, 'error');
             }
         } catch (error) {
-            this.showMessage('Network error. Please try again.', 'error');
+            console.error('Registration error:', error);
+            
+            if (error.name === 'AbortError') {
+                this.showMessage('Request timeout. Please check your connection and try again.', 'error');
+            } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                this.showMessage('Unable to connect to server. Please check if the server is running.', 'error');
+            } else {
+                this.showMessage('Network error. Please try again.', 'error');
+            }
         } finally {
             registerBtn.disabled = false;
             registerBtnText.textContent = 'Create Account';
@@ -236,6 +349,26 @@ class AuthManager {
                 window.location.pathname.includes('register.html')) {
                 window.location.href = 'dashboard.html';
             }
+        }
+    }
+    
+    async checkServerConnection() {
+        try {
+            const response = await fetch(`${this.apiBase}/health`, {
+                method: 'GET',
+                timeout: 5000
+            });
+            
+            if (response.ok) {
+                console.log('✅ Server connection is working');
+                return true;
+            } else {
+                console.log('❌ Server connection failed');
+                return false;
+            }
+        } catch (error) {
+            console.log('❌ Cannot connect to server:', error.message);
+            return false;
         }
     }
     

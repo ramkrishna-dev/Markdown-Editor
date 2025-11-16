@@ -35,6 +35,9 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// API routes
+app.use('/api/', limiter);
+
 // Static files
 app.use(express.static(path.join(__dirname)));
 
@@ -865,10 +868,45 @@ app.get('/api/admin/users', authenticateToken, (req, res) => {
     );
 });
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        version: '1.0.0'
+    });
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        version: '1.0.0'
+    });
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        version: '1.0.0',
+        server: 'Node.js/Express'
+    });
+});
+
 // Start server
 const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Health check: http://localhost:${PORT}/api/health`);
 });
 
 // WebSocket setup for real-time collaboration

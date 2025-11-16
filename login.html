@@ -203,11 +203,20 @@
             </form>
             
             <div class="auth-links">
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-[var(--text-secondary)]">
+                        Don't have an account? 
+                        <a href="register.html" class="auth-link">Sign up</a>
+                    </p>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-[var(--text-secondary)]">Server Status:</span>
+                        <span id="serverStatus" class="text-xs px-2 py-1 rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+                            <i class="fas fa-spinner fa-spin mr-1"></i>
+                            Checking...
+                        </span>
+                    </div>
+                </div>
                 <p class="text-[var(--text-secondary)]">
-                    Don't have an account? 
-                    <a href="register.html" class="auth-link">Sign up</a>
-                </p>
-                <p class="text-[var(--text-secondary)] mt-2">
                     <a href="#" class="auth-link" id="forgotPassword">Forgot your password?</a>
                 </p>
             </div>
